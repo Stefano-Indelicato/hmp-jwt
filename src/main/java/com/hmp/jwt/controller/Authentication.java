@@ -5,7 +5,8 @@ import com.hmp.jwt.entity.Worker;
 import com.hmp.jwt.dao.DeviceDAO;
 import com.hmp.jwt.dao.WorkerDAO;
 import com.hmp.jwt.service.AuthenticationManager;
-import io.quarkus.launcher.shaded.org.apache.http.HttpStatus;
+
+import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,18 +37,20 @@ public class Authentication {
     @Inject
     AuthenticationManager authenticationManager;
 
+    @Context HttpHeaders headers;
+
     @POST
     @Path("/authorize")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response authorize(@Context HttpHeaders headers, Map<String, Object> bodyMap){
+    public Response authorize(Map<String, String> bodyMap){
         LOG.info("Start handshake");
         if (!bodyMap.containsKey("id") || !bodyMap.containsKey("secret")) {
             LOG.info("end handshake");
             return Response.status(HttpStatus.SC_BAD_REQUEST).build();
         }
         try {
-            Device device = deviceDAO.findById((Integer) bodyMap.get("id"));
+            Device device = deviceDAO.findById(Integer.parseInt(bodyMap.get("id")));
             if(!device.getSecret().equals(bodyMap.get("secret"))){
                 LOG.error("end handshake: bad secret");
                 return Response.status(HttpStatus.SC_FORBIDDEN).build();
@@ -66,7 +69,7 @@ public class Authentication {
             String token = authenticationManager.generateToken(device.getId().toString(), secret);
             return Response.ok(Map.of("cache", true, "id", bodyMap.get("id"), "token", token)).build();
         } catch (Exception e){
-            LOG.error("error handshake");
+            LOG.error("error handshake", e);
             return Response.status(HttpStatus.SC_BAD_REQUEST).build();
         }
     }

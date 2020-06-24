@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 @Table(name = "devices")
 public class Device {
     @Id
+    @Column(name="id")
     private Integer id;
 
 
@@ -28,7 +29,6 @@ public class Device {
 
     @OneToOne
     @JoinColumn(name = "id_device_model", nullable = true)
-    @MapsId
     private DeviceModel deviceModel;
 
     @Column(name = "device_model")

@@ -13,11 +13,11 @@ import java.util.Base64;
 public class PBKDF2Encoder {
 
     @ConfigProperty(name = "com.hmp.jwt.password.secret")
-    private String secret;
+    String secret;
     @ConfigProperty(name = "com.hmp.jwt.password.iteration")
-    private Integer iteration;
+    Integer iteration;
     @ConfigProperty(name = "com.hmp.jwt.password.keylength")
-    private Integer keylength;
+    Integer keylength;
 
     /**
       *

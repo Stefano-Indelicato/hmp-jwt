@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
+import java.util.UUID;
 
 
 @RequestScoped
@@ -23,8 +24,7 @@ public class AuthenticationManager {
 
     public String generateSecret()
     {
-        Random random = new Random();
-        return pbkdf2Encoder.encode(Long.toString(random.nextLong()));
+        return pbkdf2Encoder.encode(UUID.randomUUID().toString());
     }
 
     public String generateToken(String id, String secret) throws Exception {
