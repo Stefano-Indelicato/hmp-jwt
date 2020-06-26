@@ -4,15 +4,13 @@ import com.hmp.jwt.dao.DeviceDAO;
 import com.hmp.jwt.dao.DeviceModelDAO;
 import com.hmp.jwt.entity.Device;
 import com.hmp.jwt.entity.DeviceModel;
-import com.hmp.jwt.event.UpdateDevice;
-import com.hmp.jwt.event.UpdateDeviceEvent;
 import com.hmp.jwt.utils.StringUtils;
+import io.quarkus.vertx.ConsumeEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -28,9 +26,9 @@ public class DeviceManager {
     @Inject
     DeviceModelDAO deviceModelDAO;
 
+    @ConsumeEvent(value = "updateDevice", blocking = true)
     @Transactional(Transactional.TxType.REQUIRED)
-    public void updateDevice(@Observes @UpdateDevice UpdateDeviceEvent updateDeviceEvent){
-        Device device = updateDeviceEvent.getDevice();
+    public void updateDevice(Device device){
         try {
             if (StringUtils.isNotEmpty(device.getModel()) && StringUtils.isNotEmpty(device.getManufacturer())) {
                 DeviceModel deviceModel = deviceModelDAO.findOrCeateIt(device.getModel(), device.getManufacturer());

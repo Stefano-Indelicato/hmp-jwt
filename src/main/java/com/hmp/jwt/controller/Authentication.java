@@ -4,11 +4,10 @@ import com.hmp.jwt.entity.Device;
 import com.hmp.jwt.entity.Worker;
 import com.hmp.jwt.dao.DeviceDAO;
 import com.hmp.jwt.dao.WorkerDAO;
-import com.hmp.jwt.event.UpdateDevice;
-import com.hmp.jwt.event.UpdateDeviceEvent;
 import com.hmp.jwt.service.AuthenticationManager;
 
 
+import io.vertx.mutiny.core.eventbus.EventBus;
 import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,11 +42,8 @@ public class Authentication {
     @Context HttpHeaders httpHeaders;
 
 
-
     @Inject
-    @UpdateDevice
-    Event<UpdateDeviceEvent> updateDeviceEventEvent;
-
+    EventBus eventBus;
 
     @POST
     @Path("/authorize")
@@ -83,7 +79,7 @@ public class Authentication {
             device.setOsVersion(manageNullPointer(() -> {return httpHeaders.getRequestHeader("x-client-os").get(0);}));
             device.setLanguage(manageNullPointer(() -> {return  httpHeaders.getRequestHeader("Accept-Language").get(0);}));
 
-            updateDeviceEventEvent.fire(new UpdateDeviceEvent(device));
+            eventBus.sendAndForget("updateDevice", device);
 
             String token = authenticationManager.generateToken(device.getId().toString(), secret);
 
