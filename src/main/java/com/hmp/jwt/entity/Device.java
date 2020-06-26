@@ -97,4 +97,12 @@ public class Device {
     public void setUpdatedAt(LocalDateTime lastModifiedDate) {
         this.updatedAt = lastModifiedDate;
     }
+
+    public String getModel() {
+        return model;
+    }
+
+    public String getManufacturer() {
+        return manufacturer;
+    }
 }

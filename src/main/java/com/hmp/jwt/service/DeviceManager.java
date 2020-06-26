@@ -4,39 +4,42 @@ import com.hmp.jwt.dao.DeviceDAO;
 import com.hmp.jwt.dao.DeviceModelDAO;
 import com.hmp.jwt.entity.Device;
 import com.hmp.jwt.entity.DeviceModel;
+import com.hmp.jwt.event.UpdateDevice;
+import com.hmp.jwt.event.UpdateDeviceEvent;
+import com.hmp.jwt.utils.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.enterprise.context.RequestScoped;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
-import java.net.http.HttpHeaders;
-import java.sql.Timestamp;
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 
-@RequestScoped
+@ApplicationScoped
 public class DeviceManager {
+
+    private final Logger LOG = LoggerFactory.getLogger(this.getClass());
+
     @Inject
     DeviceDAO deviceDAO;
 
     @Inject
     DeviceModelDAO deviceModelDAO;
 
-    public void updateDevice(Device device, HttpHeaders httpHeaders){
-        if (!httpHeaders.firstValue("x-device-name").isEmpty()
-                && !httpHeaders.firstValue("x-device-manufacturer").isEmpty()) {
-            DeviceModel deviceModel = deviceModelDAO.findOrCeateIt(httpHeaders.firstValue("x-device-name").get(), httpHeaders.firstValue("x-device-manufacturer").get());
-            device.setDeviceModel(deviceModel);
-            device.setModel(deviceModel.getModel());
-            device.setManufacturer(deviceModel.getManufacturer());
-            if (!httpHeaders.firstValue("x-client-os").isEmpty() && !httpHeaders.firstValue("x-client-version").isEmpty()) {
-                device.setOsName(httpHeaders.firstValue("x-client-os").get());
-                device.setOsVersion(httpHeaders.firstValue("x-client-os").get());
-
+    @Transactional(Transactional.TxType.REQUIRED)
+    public void updateDevice(@Observes @UpdateDevice UpdateDeviceEvent updateDeviceEvent){
+        Device device = updateDeviceEvent.getDevice();
+        try {
+            if (StringUtils.isNotEmpty(device.getModel()) && StringUtils.isNotEmpty(device.getManufacturer())) {
+                DeviceModel deviceModel = deviceModelDAO.findOrCeateIt(device.getModel(), device.getManufacturer());
+                device.setDeviceModel(deviceModel);
             }
-            if (!httpHeaders.firstValue("Accept-Language").isEmpty()) {
-                 device.setLanguage( httpHeaders.firstValue("Accept-Language").get()); }
-
             device.setUpdatedAt(LocalDateTime.now());
-
             deviceDAO.merge(device);
+        }  catch(Exception e){
+            LOG.error("Error updating Device", e);
         }
     }
 

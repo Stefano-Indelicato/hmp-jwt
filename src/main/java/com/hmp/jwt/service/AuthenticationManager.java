@@ -1,14 +1,13 @@
 package com.hmp.jwt.service;
 
 import com.hmp.jwt.enums.Role;
-import com.hmp.jwt.utility.PBKDF2Encoder;
-import com.hmp.jwt.utility.TokenUtils;
+import com.hmp.jwt.utils.PBKDF2Encoder;
+import com.hmp.jwt.utils.TokenUtils;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import java.util.HashSet;
-import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 

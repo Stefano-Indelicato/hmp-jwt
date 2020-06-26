@@ -6,7 +6,7 @@ import javax.persistence.*;
 @Table(name = "device_model", uniqueConstraints = @UniqueConstraint(columnNames = {"model", "manufacturer"}) )
 public class DeviceModel {
     @Id
-    @SequenceGenerator(name="deviceModelSequence", sequenceName = "deviceModelId_seq", allocationSize = 1, initialValue = 1)
+    @SequenceGenerator(name="deviceModelSequence", sequenceName = "device_model_id_seq", allocationSize = 1, initialValue = 1)
     @GeneratedValue(strategy= GenerationType.SEQUENCE, generator="deviceModelSequence")
     private Long id;
 

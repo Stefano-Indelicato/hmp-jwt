@@ -1,4 +1,4 @@
-package com.hmp.jwt.utility;
+package com.hmp.jwt.utils;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 

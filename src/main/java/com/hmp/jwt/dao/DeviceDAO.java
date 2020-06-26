@@ -18,7 +18,7 @@ public class DeviceDAO {
     }
 
     @Transactional
-    public void merge(Device worker){
-        entityManager.merge(worker);
+    public void merge(Device device){
+        entityManager.merge(device);
     }
 }

@@ -1,4 +1,4 @@
-package com.hmp.jwt.utility;
+package com.hmp.jwt.utils;
 
 import com.hmp.jwt.enums.Role;
 import io.smallrye.jwt.build.Jwt;
