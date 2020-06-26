@@ -14,10 +14,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.core.*;
 import java.time.LocalDateTime;
 import java.util.Map;
 
@@ -26,7 +23,8 @@ import java.util.Map;
 public class Authentication {
     private final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
-
+    @Context
+    SecurityContext securityContext;
 
     @Inject
     DeviceDAO deviceDAO;

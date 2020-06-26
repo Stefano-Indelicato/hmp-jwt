@@ -3,7 +3,7 @@ package com.hmp.jwt.entity;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "device_model")
+@Table(name = "device_model", uniqueConstraints = @UniqueConstraint(columnNames = {"model", "manufacturer"}) )
 public class DeviceModel {
     @Id
     @SequenceGenerator(name="deviceModelSequence", sequenceName = "deviceModelId_seq", allocationSize = 1, initialValue = 1)

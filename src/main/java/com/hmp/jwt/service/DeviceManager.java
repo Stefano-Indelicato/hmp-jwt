@@ -1,6 +1,7 @@
 package com.hmp.jwt.service;
 
 import com.hmp.jwt.dao.DeviceDAO;
+import com.hmp.jwt.dao.DeviceModelDAO;
 import com.hmp.jwt.entity.Device;
 import com.hmp.jwt.entity.DeviceModel;
 
@@ -15,12 +16,13 @@ public class DeviceManager {
     @Inject
     DeviceDAO deviceDAO;
 
+    @Inject
+    DeviceModelDAO deviceModelDAO;
+
     public void updateDevice(Device device, HttpHeaders httpHeaders){
         if (!httpHeaders.firstValue("x-device-name").isEmpty()
                 && !httpHeaders.firstValue("x-device-manufacturer").isEmpty()) {
-            DeviceModel deviceModel = new DeviceModel();
-            deviceModel.setModel(httpHeaders.firstValue("x-device-name").get());
-            deviceModel.setManufacturer(httpHeaders.firstValue("x-device-manufacturer").get());
+            DeviceModel deviceModel = deviceModelDAO.findOrCeateIt(httpHeaders.firstValue("x-device-name").get(), httpHeaders.firstValue("x-device-manufacturer").get());
             device.setDeviceModel(deviceModel);
             device.setModel(deviceModel.getModel());
             device.setManufacturer(deviceModel.getManufacturer());
