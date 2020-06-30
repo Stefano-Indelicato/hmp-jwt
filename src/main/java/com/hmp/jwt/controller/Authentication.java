@@ -4,6 +4,7 @@ import com.hmp.jwt.entity.Device;
 import com.hmp.jwt.entity.Worker;
 import com.hmp.jwt.dao.DeviceDAO;
 import com.hmp.jwt.dao.WorkerDAO;
+import com.hmp.jwt.enums.Role;
 import com.hmp.jwt.service.AuthenticationManager;
 
 
@@ -12,9 +13,9 @@ import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
@@ -25,10 +26,8 @@ import java.util.function.Supplier;
 @Path("/auth")
 @RequestScoped
 public class Authentication {
-    private final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
-    @Context
-    SecurityContext securityContext;
+    private final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
     @Inject
     DeviceDAO deviceDAO;
@@ -46,7 +45,7 @@ public class Authentication {
     EventBus eventBus;
 
     @POST
-    @Path("/authorize")
+    @Path("/handshake")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response authorize(Map<String, String> bodyMap){
@@ -91,12 +90,13 @@ public class Authentication {
         }
     }
 
-    @GET()@Path("/validate")
     @RolesAllowed("USER")
+    @GET()@Path("/authorize")
     @Produces(MediaType.TEXT_PLAIN)
-    public Response validateToken(){
+    public Response authorize(){
         return Response.status(HttpStatus.SC_OK).build();
     }
+
 
     private String manageNullPointer(Supplier<String> s) {
         try {

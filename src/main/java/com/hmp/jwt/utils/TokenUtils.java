@@ -30,6 +30,7 @@ public class TokenUtils {
 		claimsBuilder.subject(secret);
 		claimsBuilder.upn(id);
 		claimsBuilder.issuedAt(currentTimeInSecs);
+		claimsBuilder.audience("http://www.hmp.com");
 		claimsBuilder.expiresAt(currentTimeInSecs + duration);
 		claimsBuilder.groups(groups);
 
