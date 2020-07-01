@@ -4,6 +4,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "device_model", uniqueConstraints = @UniqueConstraint(columnNames = {"model", "manufacturer"}) )
+@NamedQueries({ @NamedQuery(name="selectDeviceModelFromManufacturer", query="select m from DeviceModel m where m.model= :model and m.manufacturer= :manufacturer")})
 public class DeviceModel {
     @Id
     @SequenceGenerator(name="deviceModelSequence", sequenceName = "device_model_id_seq", allocationSize = 1, initialValue = 1)

@@ -34,7 +34,6 @@ public class DeviceManager {
                 DeviceModel deviceModel = deviceModelDAO.findOrCeateIt(device.getModel(), device.getManufacturer());
                 device.setDeviceModel(deviceModel);
             }
-            device.setUpdatedAt(LocalDateTime.now());
             deviceDAO.merge(device);
         }  catch(Exception e){
             LOG.error("Error updating Device", e);

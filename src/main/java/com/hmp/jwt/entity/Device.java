@@ -7,15 +7,17 @@ import java.time.LocalDateTime;
 @Table(name = "devices")
 public class Device {
     @Id
-    @Column(name="id")
-    private Integer id;
+    @SequenceGenerator(name="deviceSequence", sequenceName = "devices_id_seq", allocationSize = 1, initialValue = 1)
+    @GeneratedValue(strategy= GenerationType.SEQUENCE, generator="deviceSequence")
+    private Long id;
 
 
     @Column(name="secret")
     private String secret;
 
-    @Column(name="workerId")
-    private Integer workerId;
+    @OneToOne
+    @JoinColumn(name = "workerId", nullable = true)
+    private Worker worker;
 
     @Column(name="language")
     private String language;
@@ -38,7 +40,26 @@ public class Device {
     private  String manufacturer;
 
     @Column(name = "updatedAt")
-    private LocalDateTime updatedAt;
+    private LocalDateTime lastModifiedDate;
+
+    @Column(name = "createdAt")
+    private LocalDateTime insertDate;
+
+
+    @PrePersist
+    public void updateDates() {
+
+        LocalDateTime now = LocalDateTime.now();
+        setInsertDate(now);
+        setLastModifiedDate(now);
+    }
+
+    @PreUpdate
+    public void updateLastModifiedDate() {
+        setLastModifiedDate(LocalDateTime.now());
+    }
+
+
 
     public String getLanguage() {
         return language;
@@ -69,11 +90,6 @@ public class Device {
         this.secret = secret;
     }
 
-
-    public Integer getWorkerId() {
-        return workerId;
-    }
-
     public void setDeviceModel(DeviceModel deviceModel) {
         this.deviceModel = deviceModel;
     }
@@ -86,7 +102,7 @@ public class Device {
         this.manufacturer = manufacturer;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
@@ -94,8 +110,12 @@ public class Device {
         return secret;
     }
 
-    public void setUpdatedAt(LocalDateTime lastModifiedDate) {
-        this.updatedAt = lastModifiedDate;
+    public void setLastModifiedDate(LocalDateTime lastModifiedDate) {
+        this.lastModifiedDate = lastModifiedDate;
+    }
+
+    public void setInsertDate(LocalDateTime insertDate) {
+        this.insertDate = insertDate;
     }
 
     public String getModel() {
@@ -104,5 +124,13 @@ public class Device {
 
     public String getManufacturer() {
         return manufacturer;
+    }
+
+    public Worker getWorker() {
+        return worker;
+    }
+
+    public void setWorker(Worker worker) {
+        this.worker = worker;
     }
 }

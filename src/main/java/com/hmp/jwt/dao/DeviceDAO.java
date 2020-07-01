@@ -1,7 +1,6 @@
 package com.hmp.jwt.dao;
 
 import com.hmp.jwt.entity.Device;
-import com.hmp.jwt.entity.Worker;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -11,14 +10,17 @@ import javax.transaction.Transactional;
 @ApplicationScoped
 public class DeviceDAO {
     @Inject
-    EntityManager entityManager;
+    EntityManager em;
 
-    public Device findById(Integer id){
-        return entityManager.find(Device.class, id);
+    public Device findById(Long id){
+        return em.find(Device.class, id);
     }
 
-    @Transactional
+    @Transactional(Transactional.TxType.REQUIRES_NEW)
     public void merge(Device device){
-        entityManager.merge(device);
+        em.merge(device);
     }
+
+    @Transactional(Transactional.TxType.REQUIRES_NEW)
+    public void persist(Device device){ em.persist(device);}
 }

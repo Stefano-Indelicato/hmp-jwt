@@ -10,15 +10,23 @@ import javax.transaction.Transactional;
 @ApplicationScoped
 public class WorkerDAO {
     @Inject
-    EntityManager entityManager;
+    EntityManager em;
 
     public Worker findById(Integer id){
-        return entityManager.find(Worker.class, id);
+        return em.find(Worker.class, id);
+    }
+
+    public Worker findByEmail(String email){
+        return em.createNamedQuery("selectByEmail", Worker.class)
+                .setParameter("email", email)
+                .getSingleResult();
     }
 
     @Transactional
     public void merge(Worker worker){
-        entityManager.merge(worker);
+        em.merge(worker);
     }
+
+
 
 }
